@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 function block_updateurl_images() {
     return array(html_writer::tag('img', '', array('alt' => get_string('red', 'block_updateurl'), 'src' => "pix/red.png")),
                 html_writer::tag('img', '', array('alt' => get_string('blue', 'block_updateurl'), 'src' => "pix/blue.png")),
@@ -40,7 +41,6 @@ function csvtoarray($archivo,$delimitador = ","){
 		while ($data = fgetcsv($fp, 100000, $delimitador)){
 
 			$num = count($data);
-
 			$array_total[] = array_map("utf8_encode",$data);
 
 		}

@@ -104,15 +104,13 @@ if($updateurl->is_cancelled()) {
         $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
         $file = fopen($pathToOpen, 'r');
        
-
-        
         $csvProcessor = csvtoarray($pathToOpen);
         foreach ($csvProcessor as $i => $value) {
-            print_r([$value[0]][0]);
+            echo "$value[0]\t";
+            echo "$value[1]\t";
+            echo "$value[2]\t";
             echo('<br>');
         }
-
-
 
     } else{
         
