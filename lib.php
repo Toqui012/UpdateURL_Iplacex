@@ -27,3 +27,44 @@ function block_updateurl_images() {
                 html_writer::tag('img', '', array('alt' => get_string('blue', 'block_updateurl'), 'src' => "pix/blue.png")),
                 html_writer::tag('img', '', array('alt' => get_string('green', 'block_updateurl'), 'src' => "pix/green.png")));
 }
+
+
+// function csvtoarray($archivo,$delimitador = ","){
+
+//     if(!empty($archivo) && !empty($delimitador) && is_file($archivo)):
+
+//         $array_total = array();
+//         $fp = fopen($archivo,"r");
+
+//         // Se procesa la data y esta se comprime dentro de un arreglo
+//         while ($data = fgetcsv($fp, $readcount, $delimitador)){
+//             $num = count($data);
+//             $array_total[] = array_map($fromform->encoding,$data);
+//         }
+//         fclose($fp);
+//         return $array_total;
+
+//     else:
+//         return false;
+//     endif;
+// }
+
+function csvToArray($fileOpen, $delimitador = ",", $totalRaw, $encoding)
+{
+    if (!empty($fileOpen) && !empty($delimitador) && is_file($archivo)) 
+    {
+        
+        $total_array = array();
+        $fp = fopen($archivo, "r");
+
+        // Se procesa la data y esta se comprime dentro de un arreglo
+        while($data = fgetcsv($fp, $totalRaw, $delimitador)){
+            $array_total[] = array_map($encoding, $data);
+        }
+        fclose($fp);
+        return $array_total;
+    }else
+    {
+        return false;
+    }
+}

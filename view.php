@@ -110,6 +110,7 @@ if($updateurl->is_cancelled()) {
                 $array_total = array();
                 $fp = fopen($archivo,"r");
 
+                // Se procesa la data y esta se comprime dentro de un arreglo
                 while ($data = fgetcsv($fp, $readcount, $delimitador)){
                     $num = count($data);
                     $array_total[] = array_map($fromform->encoding,$data);
@@ -118,21 +119,20 @@ if($updateurl->is_cancelled()) {
                 return $array_total;
         
             else:
-        
                 return false;
-        
             endif;
         }
+
         $arraycsv = csvtoarray($pathToOpen);
         $count = 0;
 
         foreach ($arraycsv as $i => $value) {
             print_r([$value[0]][0]);
-            echo "<br>";
-            $count++;
+            echo('<br>');
         }
 
     } else{
+        
         // Primera vez o con errores
         echo $OUTPUT->header();
         $updateurl->display();
