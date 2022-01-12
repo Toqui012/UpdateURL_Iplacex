@@ -122,13 +122,12 @@ if($updateurl->is_cancelled()) {
                 return false;
         
             endif;
-
         }
         $arraycsv = csvtoarray($pathToOpen);
         $count = 0;
 
         foreach ($arraycsv as $i => $value) {
-            print_r([$value]);
+            print_r([$value[0]][0]);
             echo "<br>";
             $count++;
         }
