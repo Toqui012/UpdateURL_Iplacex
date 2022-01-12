@@ -25,6 +25,7 @@
 require_once('../../config.php');
 require_once('updateurl_form.php');
 require_once($CFG->libdir . '/csvlib.class.php');
+require_once($CFG->dirroot.'/blocks/updateurl/lib.php');
 
 global $DB, $OUTPUT, $PAGE;
 
@@ -103,33 +104,15 @@ if($updateurl->is_cancelled()) {
         $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
         $file = fopen($pathToOpen, 'r');
        
-        function csvtoarray($archivo,$delimitador = ","){
 
-            if(!empty($archivo) && !empty($delimitador) && is_file($archivo)):
         
-                $array_total = array();
-                $fp = fopen($archivo,"r");
-
-                // Se procesa la data y esta se comprime dentro de un arreglo
-                while ($data = fgetcsv($fp, $readcount, $delimitador)){
-                    $num = count($data);
-                    $array_total[] = array_map($fromform->encoding,$data);
-                }
-                fclose($fp);
-                return $array_total;
-        
-            else:
-                return false;
-            endif;
-        }
-
-        $arraycsv = csvtoarray($pathToOpen);
-        $count = 0;
-
-        foreach ($arraycsv as $i => $value) {
+        $csvProcessor = csvtoarray($pathToOpen);
+        foreach ($csvProcessor as $i => $value) {
             print_r([$value[0]][0]);
             echo('<br>');
         }
+
+
 
     } else{
         

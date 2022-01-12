@@ -29,42 +29,28 @@ function block_updateurl_images() {
 }
 
 
-// function csvtoarray($archivo,$delimitador = ","){
+function csvtoarray($archivo,$delimitador = ","){
 
-//     if(!empty($archivo) && !empty($delimitador) && is_file($archivo)):
+	if(!empty($archivo) && !empty($delimitador) && is_file($archivo)):
 
-//         $array_total = array();
-//         $fp = fopen($archivo,"r");
+		$array_total = array();
 
-//         // Se procesa la data y esta se comprime dentro de un arreglo
-//         while ($data = fgetcsv($fp, $readcount, $delimitador)){
-//             $num = count($data);
-//             $array_total[] = array_map($fromform->encoding,$data);
-//         }
-//         fclose($fp);
-//         return $array_total;
+		$fp = fopen($archivo,"r");
 
-//     else:
-//         return false;
-//     endif;
-// }
+		while ($data = fgetcsv($fp, 100000, $delimitador)){
 
-function csvToArray($fileOpen, $delimitador = ",", $totalRaw, $encoding)
-{
-    if (!empty($fileOpen) && !empty($delimitador) && is_file($archivo)) 
-    {
-        
-        $total_array = array();
-        $fp = fopen($archivo, "r");
+			$num = count($data);
 
-        // Se procesa la data y esta se comprime dentro de un arreglo
-        while($data = fgetcsv($fp, $totalRaw, $delimitador)){
-            $array_total[] = array_map($encoding, $data);
-        }
-        fclose($fp);
-        return $array_total;
-    }else
-    {
-        return false;
-    }
+			$array_total[] = array_map("utf8_encode",$data);
+
+		}
+		fclose($fp);
+
+		return $array_total;
+
+	else:
+
+		return false;
+
+	endif;
 }
