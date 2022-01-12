@@ -90,31 +90,51 @@ if($updateurl->is_cancelled()) {
         $content = $updateurl->get_file_content('filename');
         $readcount = $cir->load_csv_content($content, $fromform->encoding, $fromform->delimiter);
 
-        // unset($content);
+        if ($readcount === false) {
+            print_error('csvfileerror', 'tool_uploadcourse', $returnurl, $cir->get_error());
+        } else if ($readcount == 0){
+            print_error('csvemptyfile', 'error', $returnurl, $cir->get_error());
+        }
 
-        // if ($readcount === false) {
-        //     print_error('csvfileerror', 'tool_uploadcourse', $returnurl, $cir->get_error());
-        // } else if ($readcount == 0){
-        //     print_error('csvemptyfile', 'error', $returnurl, $cir->get_error());
-        // }
+        //File Source
+        //Se busca el archivo subido dentro del directorio temporal que establece moodle
+        //Se abre el archivo para poder procesar la data y transofrmarla
 
-        $user = $DB->get_record_sql('SELECT id, fullname FROM mdl_course WHERE id = 2;');
-        // print_r($user->{'fullname'});
+        $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
+        $file = fopen($pathToOpen, 'r');
+       
+        function csvtoarray($archivo,$delimitador = ","){
 
-        $sql = "UPDATE {course}
-                    SET fullname = 'Ha funcionado'
-                WHERE id = 2";
-
+            if(!empty($archivo) && !empty($delimitador) && is_file($archivo)):
         
-        // if (strpos($content, $user->{'fullname'})) {
-        //     $DB->execute($sql, $params=null);
-        //     print_r('hola mundo');
-        // }
+                $array_total = array();
+                $fp = fopen($archivo,"r");
+
+                while ($data = fgetcsv($fp, $readcount, $delimitador)){
+                    $num = count($data);
+                    $array_total[] = array_map($fromform->encoding,$data);
+                }
+                fclose($fp);
+                return $array_total;
         
+            else:
+        
+                return false;
+        
+            endif;
+
+        }
+        $arraycsv = csvtoarray($pathToOpen);
+        $count = 0;
+
+        foreach ($arraycsv as $i => $value) {
+            print_r([$value]);
+            echo "<br>";
+            $count++;
+        }
+
     } else{
-         // Primera vez o con errores
-        // $site = get_site();
-        // Desplegamos nuestra página
+        // Primera vez o con errores
         echo $OUTPUT->header();
         $updateurl->display();
         echo $OUTPUT->footer();
@@ -123,14 +143,3 @@ if($updateurl->is_cancelled()) {
 } else {
     $cir = new csv_import_reader($importid, 'uploadcourse');
 }
-
-
-// Data to set in the form.
-// $data = array('importid' => $importid, 'previewrows' => $previewrows);
-// if (!empty($fromform)) {
-//     foreach ($fromform -> options as $key => $value) {
-//         $data["options[$key]"] = $value;
-//     }
-// }
-// $context = context_system::instance();
-// $fromform2 = new 
