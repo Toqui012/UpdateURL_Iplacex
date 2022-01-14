@@ -70,7 +70,7 @@ class updateurl_form extends moodleform {
         $mform->addHelpButton('encoding','encoding','tool_uploadcourse');
 
 
-        $choices = csv_import_reader::get_delimiter_list();
+        $choices = array(',' => ',' ,';' => ';', ':' => ':');
         $mform->addElement('select', 'delimiter', 
                 get_string('delimiter', 'block_updateurl'), $choices);
         $mform->addHelpButton('delimiter','csvdelimiter','tool_uploadcourse');

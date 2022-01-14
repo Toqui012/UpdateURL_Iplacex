@@ -103,15 +103,29 @@ if($updateurl->is_cancelled()) {
 
         $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
         $file = fopen($pathToOpen, 'r');
-       
-        $csvProcessor = csvtoarray($pathToOpen);
-        foreach ($csvProcessor as $i => $value) {
-            echo "$value[0]\t";
-            echo "$value[1]\t";
-            echo "$value[2]\t";
-            echo('<br>');
-        }
 
+
+        // Consulta a base de datos
+        
+        while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
+        {
+            $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
+            $dataCourse = $DB->get_records_sql($queryCourse, null);
+
+            if ($courseid == $dataCourse[$courseid]->id && $find == $dataCourse[$courseid] ->fullname) {
+
+                $sql = "UPDATE {course}
+                            SET fullname = '$replace'
+                        WHERE id = $courseid";
+                $DB->execute($sql, $params=null);
+
+                // Primera vez o con errores
+                echo $OUTPUT->header();
+                $updateurl->display();
+                echo $OUTPUT->footer();
+                die();
+            }
+        }
     } else{
         
         // Primera vez o con errores
