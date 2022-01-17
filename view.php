@@ -117,13 +117,22 @@ if($updateurl->is_cancelled()) {
                 $sql = "UPDATE {course}
                             SET fullname = '$replace'
                         WHERE id = $courseid";
-                $DB->execute($sql, $params=null);
 
-                // Primera vez o con errores
-                echo $OUTPUT->header();
-                $updateurl->display();
-                echo $OUTPUT->footer();
-                die();
+                try {
+                    $DB->execute($sql, $params=null);
+                    // Primera vez o con errores
+                    echo $OUTPUT->header();
+                    $updateurl->display();
+                    echo $OUTPUT->footer();
+                    die();
+                    
+                } catch (\Throwable $th) {
+                    print_r($th);
+                }
+            }
+            else {
+                echo("Dato no Coincidente");
+                echo('<br>');
             }
         }
     } else{
