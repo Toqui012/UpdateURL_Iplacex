@@ -109,16 +109,27 @@ if($updateurl->is_cancelled()) {
         
         while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
         {
-            $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
-            $dataCourse = $DB->get_records_sql($queryCourse, null);
+            if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
 
-            if ($courseid == $dataCourse[$courseid]->id && $find == $dataCourse[$courseid] ->fullname) {
+                // $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
+                $queryCourse = "SELECT c.id, c.fullname, u.externalurl
+                                FROM mdl_course c 
+                                INNER JOIN mdl_url u ON c.Id = u.Course";
 
-                $sql = "UPDATE {course}
-                            SET fullname = '$replace'
-                        WHERE id = $courseid";
+                $dataCourse = $DB->get_records_sql($queryCourse, null);
+                // print_r($dataCourse);
+                // echo('<br>');
 
-                try {
+                // print_r(trim($find));
+                // echo('<br>');
+                // print_r(trim($dataCourse[$courseid]->externalurl));
+                // echo('<br>');
+
+
+                if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
+                    $sql = "UPDATE mdl_url
+                                SET externalurl = '$replace'
+                            WHERE course = $courseid";
                     $DB->execute($sql, $params=null);
                     // Primera vez o con errores
                     echo $OUTPUT->header();
@@ -126,13 +137,12 @@ if($updateurl->is_cancelled()) {
                     echo $OUTPUT->footer();
                     die();
                     
-                } catch (\Throwable $th) {
-                    print_r($th);
+                   
                 }
-            }
-            else {
-                echo("Dato no Coincidente");
-                echo('<br>');
+                // else {
+                //     print_r("Dato no Coincidente");
+                //     echo('<br>');
+                // }
             }
         }
     } else{
