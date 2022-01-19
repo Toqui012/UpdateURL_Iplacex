@@ -107,44 +107,38 @@ if($updateurl->is_cancelled()) {
 
         // Consulta a base de datos
         
-        while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
-        {
-            if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
-
-                // $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
-                $queryCourse = "SELECT c.id, c.fullname, u.externalurl
-                                FROM mdl_course c 
-                                INNER JOIN mdl_url u ON c.Id = u.Course";
-
-                $dataCourse = $DB->get_records_sql($queryCourse, null);
-                // print_r($dataCourse);
-                // echo('<br>');
-
-                // print_r(trim($find));
-                // echo('<br>');
-                // print_r(trim($dataCourse[$courseid]->externalurl));
-                // echo('<br>');
-
-
-                if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
-                    $sql = "UPDATE mdl_url
-                                SET externalurl = '$replace'
-                            WHERE course = $courseid";
-                    $DB->execute($sql, $params=null);
-                    // Primera vez o con errores
-                    echo $OUTPUT->header();
-                    $updateurl->display();
-                    echo $OUTPUT->footer();
-                    die();
-                    
-                   
+        try {
+            while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
+            {
+                if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
+    
+                    // $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
+                    $queryCourse = "SELECT c.id, c.fullname, u.externalurl
+                                    FROM mdl_course c 
+                                    INNER JOIN mdl_url u ON c.Id = u.Course";
+    
+                    $dataCourse = $DB->get_records_sql($queryCourse, null);
+    
+                    if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
+                        $sql = "UPDATE mdl_url
+                                    SET externalurl = '$replace'
+                                WHERE course = $courseid";
+                        $DB->execute($sql, $params=null);
+                       
+                    }
                 }
-                // else {
-                //     print_r("Dato no Coincidente");
-                //     echo('<br>');
-                // }
             }
+
+             // Primera vez o con errores
+             echo $OUTPUT->header();
+             $updateurl->display();
+             echo $OUTPUT->footer();
+             die();
+
+        } catch (\Throwable $th) {
+            throw $th;
         }
+       
     } else{
         
         // Primera vez o con errores

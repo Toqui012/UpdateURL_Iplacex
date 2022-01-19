@@ -86,19 +86,7 @@ class updateurl_form extends moodleform {
 
         // $mform->addElement('html', '<h1 id="hw">Hola Mundo!</h1>');
        
-        // Codigo de Prueba
-        // $csv = 'C:\\xampp\\htdocs\\test.csv';
-        // $file = fopen($csv, 'r');
-        // $contentfile = file_get_contents($csv);
-        // $select = $mform->addElement('select', 'delimiter', get_string('delimiter', 'block_updateurl'), array($variable), $attributes);
-
-
-        // $fh = fopen($csv,'r');
-        // while(list($name, $lastname, $email) = fgetcsv($fh,1024,','))
-        // {
-            // $select = $mform->addElement('select', 'delimiter', get_string('delimiter', 'block_updateurl'), array($name), $attributes);
-            // $mform->addElement('html', '<h1>'+ $name +'</h1>');
-        // }
+        
 
         // Botones del sistema
         $this->add_action_buttons();
