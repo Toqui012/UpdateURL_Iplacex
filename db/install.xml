@@ -11,7 +11,7 @@
         <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="courseid"/>
         <FIELD NAME="oldurl" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="oldurl"/>
         <FIELD NAME="newurl" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="newurl"/>
-        <FIELD NAME="numupdate" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="true" COMMENT="numupdate"/>
+        <FIELD NAME="numupdate" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="numupdate"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="timemodified"/>
       </FIELDS>
       <KEYS>

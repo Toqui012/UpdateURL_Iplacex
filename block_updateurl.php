@@ -45,7 +45,23 @@ class block_updateurl extends block_base {
         } else {
             $this->content->text = '<b>Actualiza o Modifica</b> cualquier tipo de dirección o hipervinculo por otra correspondiente mediante un determinado archivo CSV';
         }
-        // $this->content->footer = 'Todos los derechos reservados';
+
+        // Desplegar los registros
+        // if ($simplehtmlpages = $DB->get_records(
+        //     'block_updateurl', 
+        //     array('blockid' => $this->instance->id))) {
+        //  $this->content->text .= html_writer::start_tag('ul');
+        //     // foreach ($simplehtmlpages as $simplehtmlpage) {
+        //     //     $pageurl = new moodle_url(
+        //     //         '/blocks/updateurl/view.php', 
+        //     //         array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'id' => $simplehtmlpage->id, 'viewpage' => '1')
+        //     //         );
+        //     //     $this->content->text .= html_writer::start_tag('li');
+        //     //     $this->content->text .= html_writer::link($pageurl, $simplehtmlpage->pagetitle);
+        //     //     $this->content->text .= html_writer::end_tag('li');
+        //     // }
+        //     $this->content->text .= html_writer::end_tag('ul');
+        // }
 
         $url = new moodle_url(
             '/blocks/updateurl/view.php', 

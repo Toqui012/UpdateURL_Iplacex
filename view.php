@@ -26,8 +26,9 @@ require_once('../../config.php');
 require_once('updateurl_form.php');
 require_once($CFG->libdir . '/csvlib.class.php');
 require_once($CFG->dirroot.'/blocks/updateurl/lib.php');
+require_once($CFG->dirroot.'/blocks/updateurl/classes/FileClass.php');
 
-global $DB, $OUTPUT, $PAGE;
+global $DB, $OUTPUT, $PAGE, $USER;
 
 $PAGE->requires->jquery();
 $PAGE->requires->js( new moodle_url($CFG->wwwroot . '/blocks/updateurl/test.js'));
@@ -86,6 +87,8 @@ if($updateurl->is_cancelled()) {
 
 } else if (empty($importid)){
     if ($fromform = $updateurl->get_data()) {
+
+        // Get Data
         $importid = csv_import_reader::get_new_iid('block_updateurl');
         $cir = new csv_import_reader($importid, 'block_updateurl');
         $content = $updateurl->get_file_content('filename');
@@ -112,28 +115,42 @@ if($updateurl->is_cancelled()) {
             {
                 if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
     
-                    // $queryCourse = "SELECT id, fullname FROM {course} WHERE id = $courseid;";
                     $queryCourse = "SELECT c.id, c.fullname, u.externalurl
                                     FROM mdl_course c 
                                     INNER JOIN mdl_url u ON c.Id = u.Course";
     
                     $dataCourse = $DB->get_records_sql($queryCourse, null);
-    
+
                     if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
+                        
+                        /* Una vez verificada la compración entre los datos de la bd y csv 
+                        se procede a generar y ejecutar la sentencia para hace provocar los cambios*/
+
                         $sql = "UPDATE mdl_url
                                     SET externalurl = '$replace'
                                 WHERE course = $courseid";
                         $DB->execute($sql, $params=null);
-                       
+
+                        /* Se crea un nuevo objeto para crear el registro historico en la base de datos */
+                        $newRegisterFile = new FileClass();
+                        $newRegisterFile-> userid = $USER->id;
+                        $newRegisterFile-> courseid = $fromform->courseid;
+                        $newRegisterFile-> oldurl = $find;
+                        $newRegisterFile-> newurl = $replace;
+                        $newRegisterFile-> numupdate = 1;
+                        $newRegisterFile-> timemodified = strtotime(date('d-m-Y'));
+                        
+                        if (! $DB -> insert_record('block_updateurl', $newRegisterFile)) {
+                            print_error('inserterror', 'block_updateurl');
+                        }
                     }
                 }
             }
-
-             // Primera vez o con errores
-             echo $OUTPUT->header();
-             $updateurl->display();
-             echo $OUTPUT->footer();
-             die();
+            // Primera vez o con errores
+            echo $OUTPUT->header();
+            $updateurl->display();
+            echo $OUTPUT->footer();
+            die();
 
         } catch (\Throwable $th) {
             throw $th;
