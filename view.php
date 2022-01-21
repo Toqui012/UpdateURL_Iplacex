@@ -48,6 +48,9 @@ $importid = optional_param('importid', '', PARAM_INT);
 // Busca la cantidad de filas seleccionadas dentro del formulario
 $previewrows = optional_param('previewrows', 10, PARAM_INT);
 
+// Recuperar el parametro viewpage
+$viewpage = optional_param('viewpage', false, PARAM_BOOL);
+
 
 // Devuelve un unico registro de la base de datos como un objeto
 // donde se cumplen todas las condiciones dadas
@@ -148,10 +151,13 @@ if($updateurl->is_cancelled()) {
             }
             // Primera vez o con errores
             echo $OUTPUT->header();
-            $updateurl->display();
+            if ($viewpage) {
+                $updateurlpage = $DB->get_record('block_updateurl', array('id' => $id));
+                block_update_print_page($updateurlpage);
+            } else {
+                $updateurl->display();
+            }
             echo $OUTPUT->footer();
-            die();
-
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -160,9 +166,13 @@ if($updateurl->is_cancelled()) {
         
         // Primera vez o con errores
         echo $OUTPUT->header();
-        $updateurl->display();
+        if ($viewpage) {
+            $updateurlpage = $DB->get_record('block_updateurl', array('id' => $id));
+            block_update_print_page($updateurlpage);
+        } else {
+            $updateurl->display();
+        }
         echo $OUTPUT->footer();
-        die();
     }
 } else {
     $cir = new csv_import_reader($importid, 'uploadcourse');

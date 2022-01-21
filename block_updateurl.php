@@ -29,7 +29,7 @@ class block_updateurl extends block_base {
     }
 
     public function get_content() {
-        global $COURSE;
+        global $COURSE, $DB;
 
         if ($this->content !== null) {
             if($this->config->disabled){
@@ -47,21 +47,29 @@ class block_updateurl extends block_base {
         }
 
         // Desplegar los registros
-        // if ($simplehtmlpages = $DB->get_records(
-        //     'block_updateurl', 
-        //     array('blockid' => $this->instance->id))) {
-        //  $this->content->text .= html_writer::start_tag('ul');
-        //     // foreach ($simplehtmlpages as $simplehtmlpage) {
-        //     //     $pageurl = new moodle_url(
-        //     //         '/blocks/updateurl/view.php', 
-        //     //         array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'id' => $simplehtmlpage->id, 'viewpage' => '1')
-        //     //         );
-        //     //     $this->content->text .= html_writer::start_tag('li');
-        //     //     $this->content->text .= html_writer::link($pageurl, $simplehtmlpage->pagetitle);
-        //     //     $this->content->text .= html_writer::end_tag('li');
-        //     // }
-        //     $this->content->text .= html_writer::end_tag('ul');
-        // }
+        if ($simplehtmlpages = $DB->get_records(
+            'block_updateurl')) {
+         $this->content->text .= html_writer::start_tag('ul');
+            foreach ($simplehtmlpages as $simplehtmlpage) {
+                $pageurl = new moodle_url(
+                    '/blocks/updateurl/view.php', 
+                    array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'id' => $simplehtmlpage->id, 'viewpage' => '1')
+                );
+                $this->content->text .= html_writer::start_tag('li');
+                $this->content->text .= html_writer::link($pageurl, $simplehtmlpage->userid);
+                $this->content->text .= html_writer::end_tag('li');
+            }
+            $this->content->text .= html_writer::end_tag('ul');
+        }
+        else {
+            echo('Esto es null');
+        }
+
+        // $this->content->text .= html_writer::start_tag('ul');
+        //     $this->content->text .= html_writer::start_tag('li');
+        //     $this->content->text .= html_writer::link($pageurl, $DB->get_records('block_updateurl'));
+        //     $this->content->text .= html_writer::end_tag('li');
+        // $this->content->text .= html_writer::end_tag('ul');
 
         $url = new moodle_url(
             '/blocks/updateurl/view.php', 

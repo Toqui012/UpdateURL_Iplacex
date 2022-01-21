@@ -54,3 +54,10 @@ function csvtoarray($archivo,$delimitador = ","){
 
 	endif;
 }
+
+// Función encargada de imprimir información del historico de cambios de url
+function block_update_print_page( $updateurl, $return=false ){
+	// print_object($updateurl);
+	print_r($updateurl);
+	return $return;
+}
