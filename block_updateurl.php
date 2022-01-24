@@ -46,7 +46,7 @@ class block_updateurl extends block_base {
             $this->content->text = '<b>Actualiza o Modifica</b> cualquier tipo de dirección o hipervinculo por otra correspondiente mediante un determinado archivo CSV';
         }
 
-        // Desplegar los registros
+        //Desplegar los registros
         if ($simplehtmlpages = $DB->get_records(
             'block_updateurl')) {
          $this->content->text .= html_writer::start_tag('ul');
@@ -64,12 +64,7 @@ class block_updateurl extends block_base {
         else {
             echo('Esto es null');
         }
-
-        // $this->content->text .= html_writer::start_tag('ul');
-        //     $this->content->text .= html_writer::start_tag('li');
-        //     $this->content->text .= html_writer::link($pageurl, $DB->get_records('block_updateurl'));
-        //     $this->content->text .= html_writer::end_tag('li');
-        // $this->content->text .= html_writer::end_tag('ul');
+        
 
         $url = new moodle_url(
             '/blocks/updateurl/view.php', 

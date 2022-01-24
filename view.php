@@ -137,7 +137,7 @@ if($updateurl->is_cancelled()) {
                         /* Se crea un nuevo objeto para crear el registro historico en la base de datos */
                         $newRegisterFile = new FileClass();
                         $newRegisterFile-> userid = $USER->id;
-                        $newRegisterFile-> courseid = $fromform->courseid;
+                        $newRegisterFile-> courseid = $courseid;
                         $newRegisterFile-> oldurl = $find;
                         $newRegisterFile-> newurl = $replace;
                         $newRegisterFile-> numupdate = 1;
