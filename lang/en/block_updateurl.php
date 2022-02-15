@@ -46,3 +46,5 @@ $string['red'] = 'Red';
 $string['green'] = 'Green';
 $string['blue'] = 'Blue';
 $string['delimiter'] = 'Delimiter';
+$string['updateurl:viewpages'] = 'View updateurl pages';
+$string['updateurl:managepages'] = 'Manage updateurl pages';

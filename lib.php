@@ -59,5 +59,16 @@ function csvtoarray($archivo,$delimitador = ","){
 function block_update_print_page( $updateurl, $return=false ){
 	// print_object($updateurl);
 	print_r($updateurl);
+	echo('<br>');
 	return $return;
+}
+
+function read_list_updateurl_ERROR($arrayError){
+	echo("<h4>Courseid / Find / Replace </h4>");
+
+	for ($i=0; $i < sizeof($arrayError) ; $i++) {
+		if (strval($arrayError[$i]) != 'Array'){
+			print_r ("<br> $arrayError[$i] ")[0];
+		}
+	}
 }

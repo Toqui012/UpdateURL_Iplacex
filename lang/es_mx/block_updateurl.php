@@ -46,3 +46,5 @@ $string['red'] = 'Rojo';
 $string['green'] = 'Verde';
 $string['blue'] = 'Azul';
 $string['delimiter'] = 'Delimitador';
+$string['updateurl:viewpages'] = 'Visualizar páginas en holamundo';
+$string['updateurl:managepages'] = 'Administra páginas en holamundo';

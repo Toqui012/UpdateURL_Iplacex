@@ -75,11 +75,11 @@ class updateurl_form extends moodleform {
                 get_string('delimiter', 'block_updateurl'), $choices);
         $mform->addHelpButton('delimiter','csvdelimiter','tool_uploadcourse');
 
-        $choices = array('10' => 10, '20' => 20, '100' => 100, '1000' => 1000, '10000' => 10000);
-        $mform->addElement('select', 'previewrows', 
-                get_string('rowpreviewnum', 'tool_uploadcourse') ,$choices);
-        $mform->setType('previewrows', PARAM_INT);
-        $mform->addHelpButton('previewrows', 'rowpreviewnum', 'tool_uploadcourse');
+        // $choices = array('10' => 10, '20' => 20, '100' => 100, '1000' => 1000, '10000' => 10000);
+        // $mform->addElement('select', 'previewrows', 
+        //         get_string('rowpreviewnum', 'tool_uploadcourse') ,$choices);
+        // $mform->setType('previewrows', PARAM_INT);
+        // $mform->addHelpButton('previewrows', 'rowpreviewnum', 'tool_uploadcourse');
 
         $mform->addElement('hidden', 'showpreview', 1);
         $mform->setType('showpreview', PARAM_INT);

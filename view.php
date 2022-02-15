@@ -86,7 +86,7 @@ $returnurl = new moodle_url('/course/view.php');
 if($updateurl->is_cancelled()) {
     // Los formularios cancelados redirigen a la página principal del curso.
     $updateurl = new moodle_url('/course/view.php', array('id' => $courseid));
-    redirect($courseurl);
+    redirect($updateurl, 'El formulario ha sido cancelado', null, \core\output\notification::NOTIFY_ERROR);
 
 } else if (empty($importid)){
     if ($fromform = $updateurl->get_data()) {
@@ -116,6 +116,7 @@ if($updateurl->is_cancelled()) {
         try {
             while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
             {
+                // Se omiten los encabezados del csv (en el caso que los tenga)
                 if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
     
                     $queryCourse = "SELECT c.id, c.fullname, u.externalurl
@@ -124,10 +125,14 @@ if($updateurl->is_cancelled()) {
     
                     $dataCourse = $DB->get_records_sql($queryCourse, null);
 
+                    // Definición del arreglo encargado de guardar los registros que contengan errores
+                    $arrayError[] = array();
+
+                    // Se hace el match de los datos preguntando si son coincidentes
                     if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
                         
                         /* Una vez verificada la compración entre los datos de la bd y csv 
-                        se procede a generar y ejecutar la sentencia para hace provocar los cambios*/
+                        se procede a generar y ejecutar la sentencia para actualizar las url */
 
                         $sql = "UPDATE mdl_url
                                     SET externalurl = '$replace'
@@ -147,17 +152,35 @@ if($updateurl->is_cancelled()) {
                             print_error('inserterror', 'block_updateurl');
                         }
                     }
+                    else {
+                        array_push($arrayError, $courseid, $find, $replace);
+                    }
                 }
             }
-            // Primera vez o con errores
+            
+            
+            // Return Section 
             echo $OUTPUT->header();
             if ($viewpage) {
                 $updateurlpage = $DB->get_record('block_updateurl', array('id' => $id));
                 block_update_print_page($updateurlpage);
             } else {
-                $updateurl->display();
+                
+                if ($arrayError[2]){
+                    // redirect('http://localhost/moodle/?redirect=0', "El formulario se ha completado pero con errores dentro del archivo adjuntado <br>", read_list_updateurl_ERROR($arrayError) ,"<br>", 
+                    // null, \core\output\notification::NOTIFY_ERROR);
+                    print_error("Los datos se han actualizado correctamente pero no en su totalidad, verifique los siguientes registros", read_list_updateurl_ERROR($arrayError));
+                }
+                else
+                {
+                    // $updateurl->display();
+                    redirect('http://localhost/moodle/?redirect=0', "La opreación se ha llevado a cabo exitosamente", 
+                    null, \core\output\notification::NOTIFY_SUCCESS);
+                }
+
             }
             echo $OUTPUT->footer();
+
         } catch (\Throwable $th) {
             throw $th;
         }

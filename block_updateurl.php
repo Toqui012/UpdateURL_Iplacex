@@ -39,7 +39,7 @@ class block_updateurl extends block_base {
             }
         }
     
-        $this->content         =  new stdClass;
+        $this->content =  new stdClass;
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
@@ -55,8 +55,9 @@ class block_updateurl extends block_base {
                     '/blocks/updateurl/view.php', 
                     array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'id' => $simplehtmlpage->id, 'viewpage' => '1')
                 );
+
                 $this->content->text .= html_writer::start_tag('li');
-                $this->content->text .= html_writer::link($pageurl, $simplehtmlpage->userid);
+                $this->content->text .= html_writer::link($pageurl, $simplehtmlpage->timemodified);
                 $this->content->text .= html_writer::end_tag('li');
             }
             $this->content->text .= html_writer::end_tag('ul');
