@@ -27,6 +27,7 @@ require_once('updateurl_form.php');
 require_once($CFG->libdir . '/csvlib.class.php');
 require_once($CFG->dirroot.'/blocks/updateurl/lib.php');
 require_once($CFG->dirroot.'/blocks/updateurl/classes/FileClass.php');
+require_once($CFG->dirroot.'/blocks/updateurl/classes/FileError.php');
 
 global $DB, $OUTPUT, $PAGE, $USER;
 
@@ -111,22 +112,28 @@ if($updateurl->is_cancelled()) {
         $file = fopen($pathToOpen, 'r');
 
 
-        // Consulta a base de datos
+        // Contador de filas de csv
+        $row = 0;
+
+        // Definición del arreglo encargado de guardar los registros que contengan errores
+        $arrayError[] = array();
         
         try {
             while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
             {
+                // Se aumenta el numero de fila por cada iteración
+                $row ++;
+
                 // Se omiten los encabezados del csv (en el caso que los tenga)
                 if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
     
+                    // Se genera la query para obtener los datos
                     $queryCourse = "SELECT c.id, c.fullname, u.externalurl
                                     FROM mdl_course c 
                                     INNER JOIN mdl_url u ON c.Id = u.Course";
-    
-                    $dataCourse = $DB->get_records_sql($queryCourse, null);
 
-                    // Definición del arreglo encargado de guardar los registros que contengan errores
-                    $arrayError[] = array();
+                    // Se ejecuta la query elaborada anteriormente
+                    $dataCourse = $DB->get_records_sql($queryCourse, null);
 
                     // Se hace el match de los datos preguntando si son coincidentes
                     if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
@@ -153,7 +160,13 @@ if($updateurl->is_cancelled()) {
                         }
                     }
                     else {
-                        array_push($arrayError, $courseid, $find, $replace);
+                        
+                        $newRegisterFileError = new FileError();
+                        $newRegisterFileError-> row = $row;
+                        $newRegisterFileError-> courseid = $courseid;
+                        $newRegisterFileError-> oldurl = $find;
+                        $newRegisterFileError-> newurl = $replace;
+                        array_push($arrayError, $newRegisterFileError);
                     }
                 }
             }
@@ -165,8 +178,9 @@ if($updateurl->is_cancelled()) {
                 $updateurlpage = $DB->get_record('block_updateurl', array('id' => $id));
                 block_update_print_page($updateurlpage);
             } else {
-                
-                if ($arrayError[2]){
+
+                // sizeof($arrayError)
+                if (sizeof($arrayError) >= 2){
                     // redirect('http://localhost/moodle/?redirect=0', "El formulario se ha completado pero con errores dentro del archivo adjuntado <br>", read_list_updateurl_ERROR($arrayError) ,"<br>", 
                     // null, \core\output\notification::NOTIFY_ERROR);
                     print_error("Los datos se han actualizado correctamente pero no en su totalidad, verifique los siguientes registros", read_list_updateurl_ERROR($arrayError));
