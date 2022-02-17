@@ -57,7 +57,15 @@ function csvtoarray($archivo,$delimitador = ","){
 
 // Función encargada de imprimir información del historico de cambios de url
 function block_update_print_page( $updateurl, $return=false ){
-	print_r($updateurl);
+	echo("<li>CourseId: ");
+	print_r($updateurl->id);
+	echo("<li>UserId: ");
+	print_r($updateurl->userid);
+	echo("<li>CourseId: ");
+	print_r($updateurl->courseid);
+	echo("<li>OldUrl: ");
+	print_r($updateurl->oldurl);
+
 	echo('<br>');
 	return $return;
 }
@@ -67,7 +75,7 @@ function read_list_updateurl_ERROR($arrayError){
 	for ($i=1; $i < sizeof($arrayError) ; $i++) {
 	
 		
-		echo("<li>Numero de Linea: ");
+		echo("<li>Número de Línea: ");
 		echo (($arrayError[$i]->row));
 		print_r("<br>");
 

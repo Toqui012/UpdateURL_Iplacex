@@ -108,7 +108,9 @@ if($updateurl->is_cancelled()) {
         //Se busca el archivo subido dentro del directorio temporal que establece moodle
         //Se abre el archivo para poder procesar la data y transofrmarla
 
-        $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
+        // $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
+        $pathToOpen = "/xampp/moodledata/temp/csvimport/block_updateurl/2/$importid";
+
         $file = fopen($pathToOpen, 'r');
 
 
@@ -183,12 +185,13 @@ if($updateurl->is_cancelled()) {
                 if (sizeof($arrayError) >= 2){
                     // redirect('http://localhost/moodle/?redirect=0', "El formulario se ha completado pero con errores dentro del archivo adjuntado <br>", read_list_updateurl_ERROR($arrayError) ,"<br>", 
                     // null, \core\output\notification::NOTIFY_ERROR);
-                    print_error("Los datos se han actualizado correctamente pero no en su totalidad, verifique los siguientes registros", read_list_updateurl_ERROR($arrayError));
+                    print_error("Los datos se han actualizado correctamente, pero no en su totalidad, verifique los siguientes registros", read_list_updateurl_ERROR($arrayError));
                 }
                 else
                 {
                     // $updateurl->display();
-                    redirect('http://localhost/moodle/?redirect=0', "La opreación se ha llevado a cabo exitosamente", 
+                    // $updateurl = new moodle_url('/course/view.php', array('id' => $courseid));
+                    redirect('http://ec2-3-88-168-159.compute-1.amazonaws.com/', "La operación se ha llevado a cabo exitosamente", 
                     null, \core\output\notification::NOTIFY_SUCCESS);
                 }
 
