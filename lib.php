@@ -90,3 +90,22 @@ function read_list_updateurl_ERROR($arrayError){
 		
 	}
 }
+
+function validateData($queryCourse, $csvCourseId, $csvUrl){
+	
+
+	foreach($queryCourse as $data)
+	{
+		echo('<br>');
+		echo('<br>');
+		echo('<br>');
+		print_r($csvUrl);
+		echo('-');
+		print_r($data->externalurl);
+		if ($csvCourseId == $data->id && trim($csvUrl) == trim($data->externalurl)) {
+			return true;
+		}
+	}
+
+	return false;
+}

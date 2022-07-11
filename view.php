@@ -32,7 +32,6 @@ require_once($CFG->dirroot.'/blocks/updateurl/classes/FileError.php');
 global $DB, $OUTPUT, $PAGE, $USER;
 
 $PAGE->requires->jquery();
-$PAGE->requires->js( new moodle_url($CFG->wwwroot . '/blocks/updateurl/test.js'));
 
 // Verifique todas las variables requeridas
 $courseid = required_param('courseid', PARAM_INT);
@@ -104,22 +103,17 @@ if($updateurl->is_cancelled()) {
             print_error('csvemptyfile', 'error', $returnurl, $cir->get_error());
         }
 
-        //File Source
-        //Se busca el archivo subido dentro del directorio temporal que establece moodle
-        //Se abre el archivo para poder procesar la data y transofrmarla
-
         // $pathToOpen = "C:\\xampp\\moodledata\\temp\\csvimport\\block_updateurl\\2\\$importid";
         $pathToOpen = "/xampp/moodledata/temp/csvimport/block_updateurl/2/$importid";
-
         $file = fopen($pathToOpen, 'r');
-
 
         // Contador de filas de csv
         $row = 0;
+        $cont = 0;
 
         // Definición del arreglo encargado de guardar los registros que contengan errores
         $arrayError[] = array();
-        
+
         try {
             while(list($courseid, $find, $replace) = fgetcsv($file,10000, $fromform->delimiter))
             {
@@ -128,27 +122,28 @@ if($updateurl->is_cancelled()) {
 
                 // Se omiten los encabezados del csv (en el caso que los tenga)
                 if ($courseid != 'courseid' && $find != 'find' && $replace != 'replace') {
-    
+
                     // Se genera la query para obtener los datos
-                    $queryCourse = "SELECT c.id, c.fullname, u.externalurl
-                                    FROM mdl_course c 
-                                    INNER JOIN mdl_url u ON c.Id = u.Course";
+                    $queryCourse = "SELECT u.id as idurl, c.id, u.externalurl, c.fullname
+                                    FROM mdl_course c
+                                    INNER JOIN mdl_url u ON c.id = u.Course
+                                    WHERE c.id = $courseid";
 
                     // Se ejecuta la query elaborada anteriormente
-                    $dataCourse = $DB->get_records_sql($queryCourse, null);
+                    $dataCourse = $DB->get_records_sql($queryCourse, $params=null);
+                    $validate = validateData($dataCourse, $courseid, $find);
 
-                    // Se hace el match de los datos preguntando si son coincidentes
-                    if ($courseid == $dataCourse[$courseid]->id && trim($find) == trim($dataCourse[$courseid] ->externalurl)) {
+                    if ($validate) {
                         
-                        /* Una vez verificada la compración entre los datos de la bd y csv 
-                        se procede a generar y ejecutar la sentencia para actualizar las url */
+                        /* Una vez verificada la comparación entre los datos de la bd y csv
+                        se procede a generar y ejecutar la sentencia para ctualizar las url */
 
                         $sql = "UPDATE mdl_url
-                                    SET externalurl = '$replace'
-                                WHERE course = $courseid";
+                                SET externalurl = '$replace'
+                                WHERE course = $courseid AND externalurl = '$find'";
                         $DB->execute($sql, $params=null);
 
-                        /* Se crea un nuevo objeto para crear el registro historico en la base de datos */
+                            /* Se crea un nuevo objeto para crear el registro historico en la base de datos */
                         $newRegisterFile = new FileClass();
                         $newRegisterFile-> userid = $USER->id;
                         $newRegisterFile-> courseid = $courseid;
@@ -161,8 +156,8 @@ if($updateurl->is_cancelled()) {
                             print_error('inserterror', 'block_updateurl');
                         }
                     }
-                    else {
-                        
+                    else
+                    {
                         $newRegisterFileError = new FileError();
                         $newRegisterFileError-> row = $row;
                         $newRegisterFileError-> courseid = $courseid;
